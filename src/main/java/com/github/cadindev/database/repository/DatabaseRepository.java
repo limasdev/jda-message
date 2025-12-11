@@ -1,6 +1,6 @@
-package com.github.cadindev.model.database;
+package com.github.cadindev.database.repository;
 
-import com.github.cadindev.repository.mysql.MySQL;
+import com.github.cadindev.database.mysql.MySQL;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

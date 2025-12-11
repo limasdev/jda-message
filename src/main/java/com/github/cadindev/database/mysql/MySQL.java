@@ -1,6 +1,6 @@
-package com.github.cadindev.repository.mysql;
+package com.github.cadindev.database.mysql;
 
-import com.github.cadindev.repository.Database;
+import com.github.cadindev.database.Database;
 import lombok.Getter;
 
 import java.sql.Connection;

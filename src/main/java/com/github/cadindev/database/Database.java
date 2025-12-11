@@ -1,4 +1,4 @@
-package com.github.cadindev.repository;
+package com.github.cadindev.database;
 
 public interface Database {
 

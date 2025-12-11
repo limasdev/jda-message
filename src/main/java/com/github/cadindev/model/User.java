@@ -1,4 +1,4 @@
-package com.github.cadindev.model.user;
+package com.github.cadindev.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
