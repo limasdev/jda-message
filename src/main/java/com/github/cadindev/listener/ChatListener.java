@@ -24,6 +24,9 @@ public class ChatListener implements Listener {
 
         databaseRepository.saveMessage(playerName, message);
 
-        DiscordBot.sendToChannel(PLUGIN.getConfig().getString("id-canal"), message);
+        DiscordBot.sendToChannel(PLUGIN.getConfig().getString("id-canal"),
+                PLUGIN.getConfig().getString("message")
+                        .replace("{name}", playerName)
+                        .replace("{message}", message));
     }
 }
