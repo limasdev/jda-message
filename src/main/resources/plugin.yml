@@ -1,0 +1,4 @@
+name: MessageJDA
+main: com.github.cadindev.MessagePlugin
+version: 1.0
+api-version: 1.21
