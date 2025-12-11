@@ -1,1 +1,9 @@
 token: "TOKEN"
+id-canal: "ID"
+
+database:
+  address: "localhost"
+  port: 3306
+  database: "rederealms"
+  username: "root"
+  password: ""
