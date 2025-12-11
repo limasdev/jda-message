@@ -34,18 +34,26 @@ public class DatabaseRepository {
     }
 
     public void saveMessage(String player, String message) {
-        Connection connection = database.getConnection();
-        if(connection == null) return;
+        try {
+            Connection conn = database.getConnection();
 
-        try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO chat_messages (player, message, timestamp) VALUES (?, ?, ?)"
-        )) {
-            ps.setString(1, player);
-            ps.setString(2, message);
-            ps.setLong(3, System.currentTimeMillis());
-            ps.executeUpdate();
-        } catch (SQLException e) {
+            if (conn == null || conn.isClosed()) {
+                System.out.println("[MySQL] Conexão fechada. Reconectando...");
+                database.connect();
+                conn = database.getConnection();
+            }
+
+            String sql = "INSERT INTO chat_messages (player, message, timestamp) VALUES (?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, player);
+                ps.setString(2, message);
+                ps.setLong(3, System.currentTimeMillis());
+                ps.executeUpdate();
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }
