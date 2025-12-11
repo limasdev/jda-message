@@ -1,36 +1,51 @@
 package com.github.cadindev;
 
-import com.github.cadindev.discord.DiscordBot;
+import com.github.cadindev.model.DiscordBot;
 import com.github.cadindev.listener.ChatListener;
-import com.github.cadindev.model.database.DatabaseRepository;
-import com.github.cadindev.repository.mysql.MySQL;
+import com.github.cadindev.database.repository.DatabaseRepository;
+import com.github.cadindev.database.mysql.MySQL;
+import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@Getter
 public class MessagePlugin extends JavaPlugin {
+    @Getter
+    protected static MessagePlugin instance;
+
     private MySQL database;
     private DatabaseRepository repository;
+    private DiscordBot discordBot;
+
+    @Override
+    public void onLoad() {
+        saveDefaultConfig();
+        instance = this;
+    }
 
     @Override
     public void onEnable() {
         databaseFactory();
+        handleDiscord();
 
-        try {
-            DiscordBot.start(getConfig().getString("token"));
-        } catch (Exception e) {
-            e.printStackTrace();
+        this.repository = new DatabaseRepository(this.database);
+        getServer().getPluginManager().registerEvents(new ChatListener(getConfig(), this.repository), this);
+    }
+
+    private void handleDiscord() {
+        String token = getConfig().getString("token", "");
+        if (token.isEmpty()) {
+            getServer().getLogger().severe("Discord token not found in config.yml!");
+            getServer().shutdown();
+            return;
         }
 
-        repository = new DatabaseRepository(database);
-        getServer().getPluginManager().registerEvents(new ChatListener(this, repository), this);
-
-        saveDefaultConfig();
+        this.discordBot = new DiscordBot(token);
     }
 
     @Override
     public void onDisable() {
-        if(database != null) {
-            database.disconnect();
-        }
+        if(this.database != null)
+            this.database.disconnect();
     }
 
     private void databaseFactory() {
@@ -40,12 +55,7 @@ public class MessagePlugin extends JavaPlugin {
         String user = getConfig().getString("database.username");
         String pass = getConfig().getString("database.password");
 
-        database = new MySQL(address, port, db, user, pass);
-
-        database.connect();
-    }
-
-    public static MessagePlugin getInstance() {
-        return getPlugin(MessagePlugin.class);
+        this.database = new MySQL(address, port, db, user, pass);
+        this.database.connect();
     }
 }
