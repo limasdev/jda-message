@@ -1,21 +1,17 @@
 package com.github.cadindev.listener;
 
-import com.github.cadindev.MessagePlugin;
-import com.github.cadindev.discord.DiscordBot;
-import com.github.cadindev.model.database.DatabaseRepository;
+import com.github.cadindev.database.repository.DatabaseRepository;
+import com.github.cadindev.service.DiscordService;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+@RequiredArgsConstructor
 public class ChatListener implements Listener {
-
-    private final MessagePlugin PLUGIN;
+    private final FileConfiguration configuration;
     private final DatabaseRepository databaseRepository;
-
-    public ChatListener(MessagePlugin plugin, DatabaseRepository databaseRepository) {
-        PLUGIN = plugin;
-        this.databaseRepository = databaseRepository;
-    }
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
@@ -24,8 +20,8 @@ public class ChatListener implements Listener {
 
         databaseRepository.saveMessage(playerName, message);
 
-        DiscordBot.sendToChannel(PLUGIN.getConfig().getString("id-canal"),
-                PLUGIN.getConfig().getString("message")
+        DiscordService.sendToChannel(this.configuration.getString("id-canal"),
+                this.configuration.getString("message", "")
                         .replace("{name}", playerName)
                         .replace("{message}", message));
     }
