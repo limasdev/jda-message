@@ -12,6 +12,7 @@ public class DatabaseRepository {
 
     public DatabaseRepository(MySQL database) {
         this.database = database;
+        this.createTable();
     }
 
     private void createTable() {
